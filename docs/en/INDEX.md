@@ -5,13 +5,21 @@ Find records, even if the search term is misspelled.
 ```php
 
 $obj = MyDataObject::create();
-$obj->Title = 'Test';
+$obj->MyField = 'Test';
+$obj->write();
+$obj = MyDataObject::create();
+$obj->MyField = 'Johnson Mike';
 $obj->write();
 
 
 print_r(
     MyDataObject::get()
         ->filter('MyField:FuzzyFilter' => 'Tezt'])
+        ->count()
+);
+print_r(
+    MyDataObject::get()
+        ->filter('MyField:FuzzyFilter' => 'Mike Johnson'])
         ->count()
 );
 ```
