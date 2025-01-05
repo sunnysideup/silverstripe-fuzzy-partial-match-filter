@@ -17,6 +17,10 @@ class FuzzyPartialMatchFilter extends SearchFilter
         return ['not'];
     }
 
+    private static int $min_chunk_length = 3;
+    private static float $min_chunk_match = 0.5;
+
+
     // /**
     //  * Apply the match filter to the given variable value
     //  *
@@ -73,14 +77,16 @@ class FuzzyPartialMatchFilter extends SearchFilter
     protected function applyOne(DataQuery $query)
     {
         $this->model = $query->applyRelation($this->relation);
-        $string = "(" . $this->getDbName() . ") LIKE '%" . $this->getValue() . "%' OR SOUNDEX('" . $this->getValue() . "') = SOUNDEX(" . $this->getDbName() . ")";
+        $searchForFragments = $this->searchForFragments($this->getDbName(), $this->getValue());
+        $string = "(" . $searchForFragments . ") OR SOUNDEX('" . $this->getValue() . "') = SOUNDEX(" . $this->getDbName() . ")";
         return $query->where($string);
     }
 
     protected function excludeOne(DataQuery $query)
     {
         $this->model = $query->applyRelation($this->relation);
-        $string = "(" . $this->getDbName() . ") NOT LIKE '%" . $this->getValue() . "%' AND SOUNDEX('" . $this->getValue() . "') != SOUNDEX(" . $this->getDbName() . ")";
+        $searchForFragments = $this->searchForFragments($this->getDbName(), $this->getValue(), true);
+        $string = "(" . $searchForFragments . ") AND SOUNDEX('" . $this->getValue() . "') != SOUNDEX(" . $this->getDbName() . ")";
         return $query->where($string);
     }
 
@@ -89,5 +95,33 @@ class FuzzyPartialMatchFilter extends SearchFilter
     public function isEmpty()
     {
         return $this->getValue() === [] || $this->getValue() === null || $this->getValue() === '';
+    }
+    function searchForFragments(string $dbName, string $value, ?bool $negate = false): ?string
+    {
+        // Break the value into 3-character chunks
+        $chunks = [];
+        $chunkSize = $this->config()->get('min_chunk_length') ?: 3;
+        $matchPercentage = $this->config()->get('min_chunk_match') ?: 0.75;
+        if (strlen($value) < ($chunkSize + 1)) {
+            return "($dbName) LIKE '%$value%'";
+        }
+        for ($i = 0; $i <= strlen($value) - $chunkSize; $i++) {
+            $chunks[] = substr($value, $i, $chunkSize);
+        }
+
+        // Build the SQL condition to match chunks in the database field
+        $chunkConditions = array_map(function ($chunk) use ($dbName) {
+            return "($dbName) LIKE '%$chunk%'";
+        }, $chunks);
+
+        // Combine the conditions and calculate the percentage match
+        $totalChunks = count($chunks);
+        //Combines the conditions into a single expression, joined by +. In SQL, TRUE is treated as 1 and FALSE as 0. So, + adds up the matches.
+        $sign = $negate ? '<' : '>';
+        $query = "
+            ((" . implode(') + (', $chunkConditions) . ") " . $sign . "= " . ceil($totalChunks * $matchPercentage) . ")
+        ";
+
+        return $query;
     }
 }
