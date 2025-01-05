@@ -28,7 +28,7 @@ print_r(
 
 If you are getting too many matches or too few, you can change the configuration:
 
-Want less match? Do something like this:
+Would you like less matches? Do something like this:
 
 ```yml
 Sunnysideup\FuzzyPartialMatchFilter\FuzzyPartialMatchFilter:
@@ -36,7 +36,7 @@ Sunnysideup\FuzzyPartialMatchFilter\FuzzyPartialMatchFilter:
   min_chunk_match_percentage: 0.75
 ```
 
-Want more match? Do something like this:
+Care for more matches? Do something like this:
 
 ```yml
 Sunnysideup\FuzzyPartialMatchFilter\FuzzyPartialMatchFilter:
