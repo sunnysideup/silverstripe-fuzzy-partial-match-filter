@@ -18,7 +18,7 @@ class FuzzyPartialMatchFilter extends SearchFilter
     }
 
     private static int $min_chunk_length = 3;
-    private static float $min_chunk_match = 0.5;
+    private static float $min_chunk_match_percentage = 0.5;
 
 
     // /**
@@ -101,7 +101,7 @@ class FuzzyPartialMatchFilter extends SearchFilter
         // Break the value into 3-character chunks
         $chunks = [];
         $chunkSize = $this->config()->get('min_chunk_length') ?: 3;
-        $matchPercentage = $this->config()->get('min_chunk_match') ?: 0.75;
+        $matchPercentage = $this->config()->get('min_chunk_match_percentage') ?: 0.75;
         if (strlen($value) < ($chunkSize + 1)) {
             return "($dbName) LIKE '%$value%'";
         }
