@@ -18,7 +18,7 @@ class FuzzyPartialMatchFilter extends SearchFilter
     }
 
     private static int $min_chunk_length = 3;
-    private static float $min_chunk_match_percentage = 0.5;
+    private static float $min_chunk_match_percentage = 0.6;
 
 
     // /**

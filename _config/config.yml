@@ -3,10 +3,10 @@
 Name: coresearchfilters_fuzzy
 ---
 SilverStripe\Core\Injector\Injector:
-  DataListFilter.FuzzyPartialMatch:
+  DataListFilter.FuzzyFilter:
     class: Sunnysideup\FuzzyPartialMatchFilter\FuzzyPartialMatchFilter
 ---
 Name: coresearchaliases_fuzzy
 ---
 SilverStripe\Core\Injector\Injector:
-  FuzzyFilter: '%$DataListFilter.FuzzyPartialMatch'
+  FuzzyFilter: '%$DataListFilter.FuzzyFilter'
