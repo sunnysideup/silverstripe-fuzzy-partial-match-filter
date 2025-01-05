@@ -11,15 +11,17 @@ $obj = MyDataObject::create();
 $obj->MyField = 'Johnson Mike';
 $obj->write();
 
-
+echo PHP_EOL."Matches for Tezt:"
 print_r(
     MyDataObject::get()
-        ->filter('MyField:FuzzyFilter' => 'Tezt'])
+        ->filter(['MyField:FuzzyFilter' => 'Tezt'])
         ->count()
 );
+
+echo PHP_EOL."Matches for Mike Johnson:"
 print_r(
     MyDataObject::get()
-        ->filter('MyField:FuzzyFilter' => 'Mike Johnson'])
+        ->filter(['MyField:FuzzyFilter' => 'Mike Johnson'])
         ->count()
 );
 ```
