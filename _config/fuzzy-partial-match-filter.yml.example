@@ -1,1 +1,4 @@
 
+Sunnysideup\FuzzyPartialMatchFilter\FuzzyPartialMatchFilter:
+  min_chunk_length: 2
+  min_chunk_match_percentage: 0.3
