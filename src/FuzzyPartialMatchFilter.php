@@ -2,10 +2,8 @@
 
 namespace Sunnysideup\FuzzyPartialMatchFilter;
 
-use SilverStripe\ORM\DataQuery;
-use SilverStripe\ORM\DB;
-use SilverStripe\ORM\SearchFilter;
-use InvalidArgumentException;
+use SilverStripe\ORM\Filters\PartialMatchFilter;
+
 
 /**
  * Matches textual content with a LIKE '%keyword%' construct.
@@ -28,6 +26,6 @@ class FuzzyPartialMatchFilter extends PartialMatchFilter
      */
     protected function getMatchPattern($value)
     {
-        return "%$value% OR SOUNDEX($this->getDbName()) = SOUNDEX('$value')";
+        return "%$value% OR SOUNDEX(" . '"' . $this->getDbName() . '"' . ") = SOUNDEX('$value')";
     }
 }
