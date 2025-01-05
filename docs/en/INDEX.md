@@ -10,6 +10,6 @@ $obj->write();
 
 print_r(
     MyDataObject::get()
-        ->filter('MyField:Fuzzy' => 'Tessst'])
+        ->filter('MyField:FuzzyFilter' => 'Tessst'])
         ->count()
 );
